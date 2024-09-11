@@ -19,7 +19,7 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({ status: 'success', token, user });
 };
 
-exports.register = asyncHandler(async (req, res, next) => {
+exports.signup = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     return next(
