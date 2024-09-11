@@ -7,6 +7,7 @@ const logger = require('morgan');
 const connectDB = require('./db');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const GlobalErrorHandler = require('./controllers/ErrorController');
 
 connectDB();
 
@@ -24,6 +25,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
+
+app.use(GlobalErrorHandler);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
