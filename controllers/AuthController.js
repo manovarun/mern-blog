@@ -47,7 +47,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   const user = await User.findOne({ email });
-  console.log(user);
+
   if (!user) return next(new AppError('User not found, please try again', 400));
 
   const isMatch = await user.matchPassword(password);
