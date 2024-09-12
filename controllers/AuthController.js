@@ -16,7 +16,7 @@ const createSendToken = (user, statusCode, res) => {
 
   user.password = undefined;
 
-  res.status(statusCode).json({ status: 'success', token, user });
+  return res.status(statusCode).json({ status: 'success', token, user });
 };
 
 exports.signup = asyncHandler(async (req, res, next) => {
