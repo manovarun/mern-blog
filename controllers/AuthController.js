@@ -40,7 +40,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
   return createSendToken(user, 201, res);
 });
 
-exports.login = asyncHandler(async (req, res, next) => {
+exports.signin = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return next(new AppError('Please provide a valid email and password'));
