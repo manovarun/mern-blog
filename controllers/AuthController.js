@@ -1,8 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 const AppError = require('../utils/AppError');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const createSendToken = (user, statusCode, res) => {
+  console.log(user);
   const token = user.getSignedJWTToken();
 
   const cookieOptions = {
@@ -55,4 +58,32 @@ exports.signin = asyncHandler(async (req, res, next) => {
     return next(new AppError('Invalid password, please try again', 401));
 
   return createSendToken(user, 200, res);
+});
+
+exports.google = asyncHandler(async (req, res, next) => {
+  const { name, email, googlePhotoUrl } = req.body;
+
+  let user = await User.findOne({ email });
+
+  if (user) {
+    const { password, ...rest } = user._doc;
+    return createSendToken(user, 201, res);
+  } else {
+    const generatedPassword =
+      Math.random().toString(36).slice(-8) +
+      Math.random().toString(36).slice(-8);
+    const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+    const newUser = new User({
+      username:
+        name.toLowerCase().split(' ').join('') +
+        Math.random().toString(9).slice(-4),
+      email,
+      password: hashedPassword,
+      profilePicture: googlePhotoUrl,
+    });
+
+    await newUser.save();
+    const { password, ...rest } = newUser._doc;
+    return createSendToken(newUser, 201, res);
+  }
 });
